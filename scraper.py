@@ -7,7 +7,16 @@ import scraperwiki
 import lxml.html
 
 source_url = "http://www.parliament.go.tz/mps-list"
-term = '5th Assembly'
+term_id = '5'
+
+term_data = [
+    {'id': term_id,
+     'name': '5th Assembly',
+     'start_date': '2015-10-25',
+     'source': 'https://en.wikipedia.org/wiki/Tanzanian_parliamentary_election,_2015',
+     },
+    ]
+
 html = scraperwiki.scrape(source_url)
 
 root = lxml.html.fromstring(html)
@@ -18,6 +27,7 @@ data = []
 
 for tr in trs:
     member = {}
+    member['term'] = term_id
     member['image'] = tr.cssselect('img')[0].attrib.get('src')
     member['source'] = tr.cssselect('a')[0].attrib.get('href')
     member['id'] = member['source'].rsplit('/', 1)[1]
@@ -48,4 +58,5 @@ for tr in trs:
     data.append(member)
 
 
+scraperwiki.sqlite.save(unique_keys=['id'], data=term_data, table_name='terms')
 scraperwiki.sqlite.save(unique_keys=['id'], data=data)
