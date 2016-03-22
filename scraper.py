@@ -6,6 +6,21 @@ import re
 import scraperwiki
 import lxml.html
 
+
+def fetch_with_retries(source, max_tries=5):
+    tries = 0
+
+    while tries <= max_tries:
+        try:
+            html = scraperwiki.scrape(source)
+            break
+        except:
+            print "Retrying {}".format(source)
+            tries +=1
+
+    return html
+
+
 source_url = "http://www.parliament.go.tz/mps-list"
 term_id = '5'
 
@@ -17,8 +32,7 @@ term_data = [
      },
     ]
 
-html = scraperwiki.scrape(source_url)
-
+html = fetch_with_retries(source_url)
 root = lxml.html.fromstring(html)
 
 trs = root.cssselect('tr.odd')
@@ -39,7 +53,10 @@ for tr in trs:
     member['area'] = tds[2].text.strip()
     member['group'] = tds[3].text.strip()
 
-    member_html = scraperwiki.scrape(member['source'])
+    max_tries = 5
+    tries = 0
+
+    member_html = fetch_with_retries(member['source'])
     member_root = lxml.html.fromstring(member_html)
 
     items = member_root.cssselect('span.item')
