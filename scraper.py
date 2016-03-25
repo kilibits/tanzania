@@ -48,8 +48,13 @@ for tr in trs:
 
     tds = tr.cssselect('td')
 
-    member['name'] = tds[1].cssselect('a')[0].text.strip()
+    member['name'] = re.sub(
+        r'^Hon\.\s+',
+        '',
+        tds[1].cssselect('a')[0].text.strip()
+        )
     print member['name']
+
     member['area'] = tds[2].text.strip()
     member['group'] = tds[3].text.strip()
 
