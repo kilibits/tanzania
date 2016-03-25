@@ -22,6 +22,9 @@ def fetch_with_retries(source, max_tries=5):
     return html
 
 
+def normalize_whitespace(text):
+    return re.sub(r'\s+', ' ', text)
+
 source_url = "http://www.parliament.go.tz/mps-list"
 term_id = '5'
 
@@ -49,10 +52,12 @@ for tr in trs:
 
     tds = tr.cssselect('td')
 
-    member['name'] = re.sub(
-        r'^Hon\.\s+',
-        '',
-        tds[1].cssselect('a')[0].text.strip()
+    member['name'] = normalize_whitespace(
+        re.sub(
+            r'^Hon\.\s+',
+            '',
+            tds[1].cssselect('a')[0].text.strip()
+            )
         )
     print member['name']
 
