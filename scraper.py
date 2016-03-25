@@ -76,11 +76,11 @@ for tr in trs:
 
     member['phone'] = item_dict['Phone:']
     member['email'] = item_dict['EmailAddress:']
-    member['birth_date'] = item_dict['DateofBirth:']
+    birth_date = item_dict['DateofBirth:']
 
     # We don't want birth dates of 0000-00-00
-    if birth_date == '0000-00-00':
-        member.pop('birth_date')
+    if birth_date != '0000-00-00':
+        member['birth_date'] = birth_date
 
     member['member_type'] = item_dict['MemberType:']
     member['address'] = item_dict['POBox:']
