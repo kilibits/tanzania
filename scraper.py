@@ -69,7 +69,7 @@ for tr in trs:
 
     item_dict = {}
     for item in items:
-        key = re.sub(r'\s', '', item.text)
+        key = re.sub(r'[\s\.]', '', item.text)
         value = item.tail.strip()
         item_dict[key] = value
 
@@ -83,6 +83,7 @@ for tr in trs:
         member.pop('birth_date')
 
     member['member_type'] = item_dict['MemberType:']
+    member['address'] = item_dict['POBox:']
 
     data.append(member)
 
