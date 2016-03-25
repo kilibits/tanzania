@@ -2,6 +2,7 @@
 # including some code snippets below that you should find helpful
 
 import re
+from urllib import quote as urlquote
 
 import scraperwiki
 import lxml.html
@@ -42,7 +43,7 @@ data = []
 for tr in trs:
     member = {}
     member['term'] = term_id
-    member['image'] = tr.cssselect('img')[0].attrib.get('src')
+    member['image'] = urlquote(tr.cssselect('img')[0].attrib.get('src'))
     member['source'] = tr.cssselect('a')[0].attrib.get('href')
     member['id'] = member['source'].rsplit('/', 1)[1]
 
