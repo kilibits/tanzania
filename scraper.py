@@ -82,6 +82,8 @@ for tr in trs:
     if birth_date == '0000-00-00':
         member.pop('birth_date')
 
+    member['member_type'] = item_dict['MemberType:']
+
     data.append(member)
 
 
