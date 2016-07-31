@@ -42,6 +42,9 @@ root = lxml.html.fromstring(html)
 trs = root.cssselect('tr.odd')
 
 data = []
+education = []
+employment = []
+political = []
 
 for tr in trs:
     member = {}
@@ -71,6 +74,26 @@ for tr in trs:
     member_root = lxml.html.fromstring(member_html)
 
     items = member_root.cssselect('span.item')
+
+    profls = member_root.cssselect('div.profls')
+    profl_data = member_root.cssselect('table.table')
+    x = len(profls)
+    # profls_dict = {}
+    for i in xrange(x):
+        tdata = {}
+        tableName = re.sub(r'[\s\.\:]', '', profls[i].text_content())
+        cols = profl_data[i].cssselect('th')
+        col_vals = profl_data[i].cssselect('tr.odd')
+        vals = col_vals.cssselect('td')
+        for j in xrange(len(col_vals)):
+            for k in xrange(len(vals)):
+                key = re.sub(r'[\s\.\:]', '', cols[j].text)
+                #tdata[key] = col_vals[j].cssselect('td')[j].text.strip()
+                print key
+                print vals[j].text.strip()
+    #     vals = {}
+
+
 
     item_dict = {}
     for item in items:
