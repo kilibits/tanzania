@@ -76,22 +76,38 @@ for tr in trs:
     items = member_root.cssselect('span.item')
 
     profls = member_root.cssselect('div.profls')
-    profl_data = member_root.cssselect('table.table')
-    x = len(profls)
+    profl_data = member_root.cssselect('table')
+
+    education_tr = profl_data[0].cssselect('tr.odd')
+
+    for e_tr in education_tr:
+        e_data = {}
+        e_data['id'] = member['id']
+
+        e_td = e_tr.cssselect('td')
+        e_data['schoolName'] = e_td[0].text.strip()
+        e_data['award'] = e_td[1].text.strip()
+        e_data['from'] = e_td[2].text.strip()
+        e_data['to'] = e_td[3].text.strip()
+        e_data['level'] = e_td[4].text.strip()
+
+        education.append(e_data)
+
+
     # profls_dict = {}
-    for i in xrange(x):
-        tdata = {}
-        tableName = re.sub(r'[\s\.\:]', '', profls[i].text_content())
-        cols = profl_data[i].cssselect('th')
-        col_vals = profl_data[i].cssselect('tr.odd')
-        vals = col_vals.cssselect('td')
-        for j in xrange(len(col_vals)):
-            for k in xrange(len(vals)):
-                key = re.sub(r'[\s\.\:]', '', cols[j].text)
-                #tdata[key] = col_vals[j].cssselect('td')[j].text.strip()
-                print key
-                print vals[j].text.strip()
-    #     vals = {}
+    # for i in xrange(x):
+    #     tdata = {}
+    #     tableName = re.sub(r'[\s\.\:]', '', profls[i].text_content())
+    #     cols = profl_data[i].cssselect('th')
+    #     col_vals = profl_data[i].cssselect('tr.odd')
+    #     vals = col_vals.cssselect('td')
+    #     for j in xrange(len(col_vals)):
+    #         for k in xrange(len(vals)):
+    #             key = re.sub(r'[\s\.\:]', '', cols[j].text)
+    #             #tdata[key] = col_vals[j].cssselect('td')[j].text.strip()
+    #             print key
+    #             print vals[j].text.strip()
+    # #     vals = {}
 
 
 
@@ -118,3 +134,4 @@ for tr in trs:
 
 scraperwiki.sqlite.save(unique_keys=['id'], data=term_data, table_name='terms')
 scraperwiki.sqlite.save(unique_keys=['id'], data=data)
+scraperwiki.sqlite.save(unique_keys=['id'], data=education, table_name='education_history' )
