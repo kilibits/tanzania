@@ -93,22 +93,33 @@ for tr in trs:
 
         education.append(e_data)
 
+    employment_tr = profl_data[1].cssselect('tr.odd')
 
-    # profls_dict = {}
-    # for i in xrange(x):
-    #     tdata = {}
-    #     tableName = re.sub(r'[\s\.\:]', '', profls[i].text_content())
-    #     cols = profl_data[i].cssselect('th')
-    #     col_vals = profl_data[i].cssselect('tr.odd')
-    #     vals = col_vals.cssselect('td')
-    #     for j in xrange(len(col_vals)):
-    #         for k in xrange(len(vals)):
-    #             key = re.sub(r'[\s\.\:]', '', cols[j].text)
-    #             #tdata[key] = col_vals[j].cssselect('td')[j].text.strip()
-    #             print key
-    #             print vals[j].text.strip()
-    # #     vals = {}
+    for e_tr in employment_tr:
+        e_data = {}
+        e_data['id'] = member['id']
 
+        e_td = e_tr.cssselect('td')
+        e_data['institution'] = e_td[0].text.strip()
+        e_data['position'] = e_td[1].text.strip()
+        e_data['from'] = e_td[2].text.strip()
+        e_data['to'] = e_td[3].text.strip()
+
+        employment.append(e_data)
+
+    political_tr = profl_data[2].cssselect('tr.odd')
+
+    for e_tr in political_tr:
+        e_data = {}
+        e_data['id'] = member['id']
+
+        e_td = e_tr.cssselect('td')
+        e_data['institution'] = e_td[0].text.strip()
+        e_data['position'] = e_td[1].text.strip()
+        e_data['from'] = e_td[2].text.strip()
+        e_data['to'] = e_td[3].text.strip()
+
+        political.append(e_data)
 
 
     item_dict = {}
