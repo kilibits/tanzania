@@ -145,4 +145,6 @@ for tr in trs:
 
 scraperwiki.sqlite.save(unique_keys=['id'], data=term_data, table_name='terms')
 scraperwiki.sqlite.save(unique_keys=['id'], data=data)
-scraperwiki.sqlite.save(unique_keys=['id'], data=education, table_name='education_history' )
+scraperwiki.sqlite.save(unique_keys=['id'], data=education, table_name='education_history')
+scraperwiki.sqlite.save(unique_keys=['id'], data=employment, table_name='employment_history')
+scraperwiki.sqlite.save(unique_keys=['id'], data=employment, table_name='political_experience')
