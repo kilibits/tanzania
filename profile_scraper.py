@@ -27,6 +27,15 @@ def handle_empty_string(text):
     else:
         return "Missing Data"
 
+# def drop_tables():
+#     try:
+#         scraperwiki.sqlite.execute("drop table if exists employment_history")
+#         scraperwiki.sqlite.execute("drop table if exists education_history")
+#         scraperwiki.sqlite.execute("drop table if exists political_experience")
+#         scraperwiki.sqlite.commit()
+#     except scraperwiki.sqlite.SqliteError, e:
+#         print str(e)
+
 def normalize_whitespace(text):
     return re.sub(r'\s+', ' ', text)
 
@@ -50,6 +59,9 @@ data = []
 education = []
 employment = []
 political = []
+emp_id = 1
+edu_id = 1
+pol_id = 1
 
 for tr in trs:
     member = {}
@@ -84,9 +96,9 @@ for tr in trs:
     profl_data = member_root.cssselect('table')
 
     education_tr = profl_data[0].cssselect('tr.odd')
-
     for e_tr in education_tr:
         e_data = {}
+        e_data['id'] = edu_id
         e_data['mp_id'] = member['id']
 
         e_td = e_tr.cssselect('td')
@@ -97,11 +109,12 @@ for tr in trs:
         e_data['level'] = e_td[4].text.strip()
 
         education.append(e_data)
+        edu_id += 1
 
     employment_tr = profl_data[1].cssselect('tr.odd')
-
     for e_tr in employment_tr:
         e_data = {}
+        e_data['id'] = emp_id
         e_data['mp_id'] = member['id']
 
         e_td = e_tr.cssselect('td')
@@ -111,11 +124,12 @@ for tr in trs:
         e_data['to'] = e_td[3].text.strip()
 
         employment.append(e_data)
+        emp_id += 1
 
     political_tr = profl_data[2].cssselect('tr.odd')
-
     for e_tr in political_tr:
         e_data = {}
+        e_data['id'] = pol_id
         e_data['mp_id'] = member['id']
 
         e_td = e_tr.cssselect('td')
@@ -125,6 +139,7 @@ for tr in trs:
         e_data['to'] = e_td[3].text.strip()
 
         political.append(e_data)
+        pol_id += 1
 
 
     item_dict = {}
@@ -147,9 +162,8 @@ for tr in trs:
 
     data.append(member)
 
-
 scraperwiki.sqlite.save(unique_keys=['id'], data=term_data, table_name='terms')
 scraperwiki.sqlite.save(unique_keys=['id'], data=data)
-scraperwiki.sqlite.save(unique_keys=[], data=education, table_name='education_history')
-scraperwiki.sqlite.save(unique_keys=[], data=employment, table_name='employment_history')
-scraperwiki.sqlite.save(unique_keys=[], data=political, table_name='political_experience')
+scraperwiki.sqlite.save(unique_keys=['id'], data=education, table_name='education_history')
+scraperwiki.sqlite.save(unique_keys=['id'], data=employment, table_name='employment_history')
+scraperwiki.sqlite.save(unique_keys=['id'], data=political, table_name='political_experience')
