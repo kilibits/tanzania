@@ -21,6 +21,11 @@ def fetch_with_retries(source, max_tries=5):
 
     return html
 
+def handle_empty_string(text):
+    if text:
+        return text.strip()
+    else:
+        return "Missing Data"
 
 def normalize_whitespace(text):
     return re.sub(r'\s+', ' ', text)
@@ -82,7 +87,7 @@ for tr in trs:
 
     for e_tr in education_tr:
         e_data = {}
-        e_data['id'] = member['id']
+        e_data['mp_id'] = member['id']
 
         e_td = e_tr.cssselect('td')
         e_data['schoolName'] = e_td[0].text.strip()
@@ -97,11 +102,11 @@ for tr in trs:
 
     for e_tr in employment_tr:
         e_data = {}
-        e_data['id'] = member['id']
+        e_data['mp_id'] = member['id']
 
         e_td = e_tr.cssselect('td')
         e_data['institution'] = e_td[0].text.strip()
-        e_data['position'] = e_td[1].text.strip()
+        e_data['position'] = handle_empty_string(e_td[1].text) #workaround for blanks in some MP profiles
         e_data['from'] = e_td[2].text.strip()
         e_data['to'] = e_td[3].text.strip()
 
@@ -111,7 +116,7 @@ for tr in trs:
 
     for e_tr in political_tr:
         e_data = {}
-        e_data['id'] = member['id']
+        e_data['mp_id'] = member['id']
 
         e_td = e_tr.cssselect('td')
         e_data['institution'] = e_td[0].text.strip()
@@ -145,6 +150,6 @@ for tr in trs:
 
 scraperwiki.sqlite.save(unique_keys=['id'], data=term_data, table_name='terms')
 scraperwiki.sqlite.save(unique_keys=['id'], data=data)
-scraperwiki.sqlite.save(unique_keys=['id'], data=education, table_name='education_history')
-scraperwiki.sqlite.save(unique_keys=['id'], data=employment, table_name='employment_history')
-scraperwiki.sqlite.save(unique_keys=['id'], data=employment, table_name='political_experience')
+scraperwiki.sqlite.save(unique_keys=[], data=education, table_name='education_history')
+scraperwiki.sqlite.save(unique_keys=[], data=employment, table_name='employment_history')
+scraperwiki.sqlite.save(unique_keys=[], data=political, table_name='political_experience')
