@@ -59,6 +59,9 @@ data = []
 education = []
 employment = []
 political = []
+
+#used as unique_keys for emloyment, education, and politcal history tables
+#incremented for each new record
 emp_id = 1
 edu_id = 1
 pol_id = 1
