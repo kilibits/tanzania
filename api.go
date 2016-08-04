@@ -18,7 +18,7 @@ type Profile struct {
 	Image       string
 	Member_Type string
 	Address     string
-	Birth_Date  []byte
+	Birth_Date  string
 	ID          int16
 	Term        int16
 	Source      string
