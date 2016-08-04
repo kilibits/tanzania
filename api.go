@@ -45,15 +45,3 @@ func getProfile() {
 func getAllProfiles() {
 
 }
-
-func getEmploymentHistory() {
-
-}
-
-func getEducationHistory() {
-
-}
-
-func getPoliticalExperienceHistory() {
-
-}
