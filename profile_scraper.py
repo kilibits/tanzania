@@ -159,6 +159,8 @@ for tr in trs:
     # We don't want birth dates of 0000-00-00
     if birth_date != '0000-00-00':
         member['birth_date'] = birth_date
+    else:
+        member['birth_date'] = 'Missing Data'
 
     member['member_type'] = item_dict['MemberType:']
     member['address'] = item_dict['POBox:']
