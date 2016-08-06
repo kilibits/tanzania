@@ -28,18 +28,18 @@ type Profile struct {
 }
 
 type EduHist struct {
-	Institution string
-	Level       string
-	Award       string
-	From        int8
-	To          int8
+	SchoolName string
+	Level      string
+	Award      string
+	From       int16
+	To         int16
 }
 
 type EmpHist struct {
 	Institution string
 	Position    string
-	From        int8
-	To          int8
+	From        int16
+	To          int16
 }
 
 type PolHist struct {
@@ -74,7 +74,7 @@ func dbInit() *gorp.DbMap {
 func getProfiles(c *gin.Context) {
 
 	var profiles []Profile
-	_, err := dbMap.Select(&profiles, "select * from swdata")
+	_, err := dbMap.Select(&profiles, "SELECT * FROM swdata")
 
 	if err != nil {
 		log.Fatalf("Select statement failed -> %v", err.Error())
@@ -85,11 +85,24 @@ func getProfiles(c *gin.Context) {
 	c.JSON(200, profiles)
 }
 
+func getEducationHistory(c *gin.Context) {
+	var edu []EduHist
+	name := c.Params.ByName("id")
+	_, err := dbMap.Select(&edu, "SELECT schoolName, level, award, [from], [to] FROM swdata JOIN education_history ON swdata.id = education_history.mp_id WHERE swdata.name LIKE '%?%'", name)
+
+	if err != nil {
+		log.Fatalf("Select statement failed -> %v", err.Error())
+	}
+
+	c.JSON(200, edu)
+}
+
 func main() {
 	dbMap = dbInit()
 	app := gin.Default()
 	app.GET("/profiles", getProfiles)
 	app.GET("/profiles/:profile_id", getProfile)
+	app.GET("/education/:id", getEducationHistory)
 
 	app.Run(":8080")
 }
