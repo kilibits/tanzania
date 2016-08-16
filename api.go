@@ -114,6 +114,8 @@ func main() {
 
 //Temporary function to download images and store them
 //Stored images will then be stored on a CDN instead of calling from parliament site
+
+//TODO: Add http request retries to avoid timeouts
 func downloadImages(c *gin.Context) {
 
 	var links []Profile
@@ -124,21 +126,24 @@ func downloadImages(c *gin.Context) {
 	}
 
 	for _, prof := range links {
-		response, err := http.Get(prof.Image)
+		var _, err = os.Stat("./images/" + strconv.Itoa(prof.Id) + ".jpeg")
 
-		if err != nil {
-			log.Fatalf("Unable to get url -> %v", err.Error())
+		if os.IsNotExist(err) {
+			file, err := os.Create("./images/" + strconv.Itoa(prof.Id) + ".jpeg")
+			if err != nil {
+				log.Fatalf("Failed to create image -> %v", err.Error())
+			}
+			defer file.Close()
+
+			response, err := http.Get(prof.Image)
+
+			if err != nil {
+				log.Fatalf("Unable to get url -> %v", err.Error())
+			}
+
+			defer response.Body.Close()
+
+			io.Copy(file, response.Body)
 		}
-
-		defer response.Body.Close()
-
-		file, err := os.Create("./images/" + strconv.Itoa(prof.Id) + ".jpeg")
-		if err != nil {
-			log.Fatalf("Failed to create image -> %v", err.Error())
-		}
-		defer file.Close()
-
-		io.Copy(file, response.Body)
-
 	}
 }
