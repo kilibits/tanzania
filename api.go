@@ -2,7 +2,11 @@ package main
 
 import (
 	"database/sql"
+	"io"
 	"log"
+	"net/http"
+	"os"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/mattn/go-sqlite3"
@@ -19,8 +23,8 @@ type Profile struct {
 	Member_Type string
 	Address     string
 	Birth_Date  string
-	ID          int16
-	Term        int16
+	Id          int
+	Term        int
 	Source      string
 	// PoliticalExperience []PolHist
 	// EducationHistory    []EduHist
@@ -31,22 +35,22 @@ type EduHist struct {
 	Institution string
 	Level       string
 	Award       string
-	From        int16
-	To          int16
+	From        int
+	To          int
 }
 
 type EmpHist struct {
 	Institution string
 	Position    string
-	From        int16
-	To          int16
+	From        int
+	To          int
 }
 
 type PolHist struct {
 	Institution string
 	Position    string
-	From        int8
-	To          int8
+	From        int
+	To          int
 }
 
 func getProfile(c *gin.Context) {
@@ -103,6 +107,38 @@ func main() {
 	app.GET("/profiles", getProfiles)
 	app.GET("/profiles/:profile_id", getProfile)
 	app.GET("/education/:id", getEducationHistory)
+	app.GET("/download", downloadImages)
 
-	app.Run(":8080")
+	app.Run(":9000")
+}
+
+//Temporary function to download images and store them
+//Stored images will then be stored on a CDN instead of calling from parliament site
+func downloadImages(c *gin.Context) {
+
+	var links []Profile
+	_, err := dbMap.Select(&links, "SELECT id, image FROM profile")
+
+	if err != nil {
+		log.Fatalf("Select statement failed -> %v", err.Error())
+	}
+
+	for _, prof := range links {
+		response, err := http.Get(prof.Image)
+
+		if err != nil {
+			log.Fatalf("Unable to get url -> %v", err.Error())
+		}
+
+		defer response.Body.Close()
+
+		file, err := os.Create("./images/" + strconv.Itoa(prof.Id) + ".jpeg")
+		if err != nil {
+			log.Fatalf("Failed to create image -> %v", err.Error())
+		}
+		defer file.Close()
+
+		io.Copy(file, response.Body)
+
+	}
 }
