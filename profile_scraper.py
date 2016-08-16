@@ -69,7 +69,7 @@ pol_id = 1
 for tr in trs:
     member = {}
     member['term'] = term_id
-    member['image'] = urlquote(tr.cssselect('img')[0].attrib.get('src'))
+    member['image'] = urlquote(tr.cssselect('img')[0].attrib.get('src')).replace("%3A", ":", 1)
     member['source'] = tr.cssselect('a')[0].attrib.get('href')
     member['id'] = member['source'].rsplit('/', 1)[1]
 
@@ -105,7 +105,7 @@ for tr in trs:
         e_data['mp_id'] = member['id']
 
         e_td = e_tr.cssselect('td')
-        e_data['schoolName'] = e_td[0].text.strip()
+        e_data['institution'] = e_td[0].text.strip()
         e_data['award'] = e_td[1].text.strip()
         e_data['from'] = e_td[2].text.strip()
         e_data['to'] = e_td[3].text.strip()
@@ -168,7 +168,7 @@ for tr in trs:
     data.append(member)
 
 scraperwiki.sqlite.save(unique_keys=['id'], data=term_data, table_name='terms')
-scraperwiki.sqlite.save(unique_keys=['id'], data=data)
+scraperwiki.sqlite.save(unique_keys=['id'], data=data, table_name='profile')
 scraperwiki.sqlite.save(unique_keys=['id'], data=education, table_name='education_history')
 scraperwiki.sqlite.save(unique_keys=['id'], data=employment, table_name='employment_history')
 scraperwiki.sqlite.save(unique_keys=['id'], data=political, table_name='political_experience')

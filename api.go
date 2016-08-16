@@ -28,11 +28,11 @@ type Profile struct {
 }
 
 type EduHist struct {
-	SchoolName string
-	Level      string
-	Award      string
-	From       int16
-	To         int16
+	Institution string
+	Level       string
+	Award       string
+	From        int16
+	To          int16
 }
 
 type EmpHist struct {
@@ -74,7 +74,7 @@ func dbInit() *gorp.DbMap {
 func getProfiles(c *gin.Context) {
 
 	var profiles []Profile
-	_, err := dbMap.Select(&profiles, "SELECT * FROM swdata")
+	_, err := dbMap.Select(&profiles, "SELECT * FROM profile")
 
 	if err != nil {
 		log.Fatalf("Select statement failed -> %v", err.Error())
@@ -88,7 +88,7 @@ func getProfiles(c *gin.Context) {
 func getEducationHistory(c *gin.Context) {
 	var edu []EduHist
 	name := c.Params.ByName("id")
-	_, err := dbMap.Select(&edu, "SELECT schoolName, level, award, [from], [to] FROM swdata JOIN education_history ON swdata.id = education_history.mp_id WHERE swdata.name LIKE '%?%'", name)
+	_, err := dbMap.Select(&edu, "SELECT schoolName, level, award, [from], [to] FROM profile JOIN education_history ON swdata.id = education_history.mp_id WHERE swdata.name LIKE '%?%'", name)
 
 	if err != nil {
 		log.Fatalf("Select statement failed -> %v", err.Error())
