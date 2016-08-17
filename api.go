@@ -11,21 +11,21 @@ import (
 
 //A Profile of member of parliament with basic details
 type Profile struct {
-	Name       string
-	Group      string
-	Area       string
-	Phone      string
-	Email      string
-	Image      string
-	MemberType string `db:"member_type"`
-	Address    string
-	BirthDate  string `db:"birth_date"`
-	Id         int
-	Term       int
-	Source     string
-	// PoliticalExperience []PolHist
-	// EducationHistory    []EduHist
-	// EmploymentHistory   []EmpHist
+	Name                string
+	Group               string
+	Area                string
+	Phone               string
+	Email               string
+	Image               string
+	MemberType          string `db:"member_type"`
+	Address             string
+	BirthDate           string `db:"birth_date"`
+	Id                  int
+	Term                int
+	Source              string
+	PoliticalExperience []PolHist
+	EducationHistory    []EduHist
+	EmploymentHistory   []EmpHist
 }
 
 //EduHist (Education History) of member of parliament
@@ -53,10 +53,6 @@ type PolHist struct {
 	To          int
 }
 
-func getProfile(c *gin.Context) {
-
-}
-
 var dbMap *gorp.DbMap
 
 func dbInit() *gorp.DbMap {
@@ -65,7 +61,7 @@ func dbInit() *gorp.DbMap {
 		log.Fatalf("Error Opening Database -> %v", err.Error())
 	}
 
-	dbMap := &gorp.DbMap{Db: db, Dialect: gorp.SqliteDialect{}}
+	dbMap = &gorp.DbMap{Db: db, Dialect: gorp.SqliteDialect{}}
 	// dbMap.AddTableWithName(Profile{}, "swdata").SetKeys(true, "Id")
 	// err = dbMap.CreateTablesIfNotExists()
 	// if err != nil {
@@ -89,10 +85,15 @@ func getAllProfiles(c *gin.Context) {
 	c.JSON(200, profiles)
 }
 
+//TODO Get profile one profile by its id
+func getProfile(c *gin.Context) {
+
+}
+
 func getEducationHistory(c *gin.Context) {
 	var edu []EduHist
-	name := c.Params.ByName("id")
-	_, err := dbMap.Select(&edu, "SELECT institution, level, award, [from], [to] FROM profile JOIN education_history ON swdata.id = education_history.mp_id WHERE swdata.name LIKE '%?%'", name)
+	id := c.Params.ByName("id")
+	_, err := dbMap.Select(&edu, "SELECT institution, level, award, [from], [to] FROM profile JOIN education_history ON profile.id = education_history.mp_id WHERE profile.name id = '%?%'", id)
 
 	if err != nil {
 		log.Fatalf("Select statement failed -> %v", err.Error())
