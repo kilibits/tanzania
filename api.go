@@ -86,7 +86,25 @@ func getAllProfiles(c *gin.Context) {
 }
 
 //TODO Get profile one profile by its id
-func getProfile(c *gin.Context) {
+func getByName(c *gin.Context) {
+
+}
+
+func getByParty(c *gin.Context) {
+	var profiles []Profile
+	id := c.Params.ByName("party")
+	_, err := dbMap.Select(&profiles, "SELECT * FROM profile WHERE group = ?", id)
+
+	if err != nil {
+		log.Fatalf("Select statement failed -> %v", err.Error())
+	}
+
+	//	content := gin.H{}
+
+	c.JSON(200, profiles)
+}
+
+func getByConstituency(c *gin.Context) {
 
 }
 
