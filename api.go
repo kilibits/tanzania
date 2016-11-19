@@ -105,7 +105,17 @@ func getByParty(c *gin.Context) {
 }
 
 func getByConstituency(c *gin.Context) {
+	var profiles []Profile
+	id := c.Params.ByName("area")
+	_, err := dbMap.Select(&profiles, "SELECT * FROM profile WHERE area = ?", id)
 
+	if err != nil {
+		log.Fatalf("Select statement failed -> %v", err.Error())
+	}
+
+	//	content := gin.H{}
+
+	c.JSON(200, profiles)
 }
 
 func getEducationHistory(c *gin.Context) {
