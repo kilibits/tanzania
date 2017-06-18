@@ -62,11 +62,6 @@ func dbInit() *gorp.DbMap {
 	}
 
 	dbMap = &gorp.DbMap{Db: db, Dialect: gorp.SqliteDialect{}}
-	// dbMap.AddTableWithName(Profile{}, "swdata").SetKeys(true, "Id")
-	// err = dbMap.CreateTablesIfNotExists()
-	// if err != nil {
-	// 	log.Fatalf("Failed to create table -> %v", err.Error())
-	// }
 
 	return dbMap
 }
@@ -79,15 +74,20 @@ func getAllProfiles(c *gin.Context) {
 	if err != nil {
 		log.Fatalf("Select statement failed -> %v", err.Error())
 	}
-
-	//	content := gin.H{}
-
 	c.JSON(200, profiles)
 }
 
-//TODO Get profile one profile by its id
-func getByName(c *gin.Context) {
+func getProfile(c *gin.Context) {
 
+	var profile Profile
+	id := c.Params.ByName("profile_id")
+	_, err := dbMap.Select(&profile, "SELECT * FROM profile WHERE id = ?", id)
+
+	if err != nil {
+		log.Fatalf("Select statement failed -> %v", err.Error())
+	}
+
+	c.JSON(200, profile)
 }
 
 func getByParty(c *gin.Context) {
@@ -98,8 +98,6 @@ func getByParty(c *gin.Context) {
 	if err != nil {
 		log.Fatalf("Select statement failed -> %v", err.Error())
 	}
-
-	//	content := gin.H{}
 
 	c.JSON(200, profiles)
 }
@@ -112,9 +110,6 @@ func getByConstituency(c *gin.Context) {
 	if err != nil {
 		log.Fatalf("Select statement failed -> %v", err.Error())
 	}
-
-	//	content := gin.H{}
-
 	c.JSON(200, profiles)
 }
 
