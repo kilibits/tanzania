@@ -2,7 +2,7 @@
 # including some code snippets below that you should find helpful
 
 import re
-from urllib import quote as urlquote
+from urllib.parse import quote as urlquote
 
 import scraperwiki
 import lxml.html
@@ -16,7 +16,7 @@ def fetch_with_retries(source, max_tries=5):
             html = scraperwiki.scrape(source)
             break
         except:
-            print "Retrying {}".format(source)
+            print("Retrying {}".format(source))
             tries +=1
 
     return html
@@ -39,7 +39,7 @@ def handle_empty_string(text):
 def normalize_whitespace(text):
     return re.sub(r'\s+', ' ', text)
 
-source_url = "http://www.parliament.go.tz/mps-list"
+source_url = "https://www.bunge.go.tz/polis/members"
 term_id = '5'
 
 term_data = [
@@ -82,7 +82,7 @@ for tr in trs:
             tds[1].cssselect('a')[0].text.strip()
             )
         )
-    print member['name']
+    print(member['name'])
 
     member['area'] = tds[2].text.strip()
     member['group'] = tds[3].text.strip()
