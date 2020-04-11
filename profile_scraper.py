@@ -10,7 +10,6 @@ import lxml.html
 
 def fetch_with_retries(source, max_tries=5):
     tries = 0
-
     while tries <= max_tries:
         try:
             html = scraperwiki.scrape(source)
@@ -51,9 +50,15 @@ term_data = [
     ]
 
 html = fetch_with_retries(source_url)
+print(html, file=open('results.html', 'a'))
 root = lxml.html.fromstring(html)
+main_table = root.xpath('//table')[0]
+summary_table = root.xpath("//table")[1]
 
-trs = root.cssselect('tr.odd')
+main_table_rows = main_table.xpath('.//tbody/tr')
+
+if len(main_table_rows) == 0:
+    raise Exception("No rows found in main_table")
 
 data = []
 education = []
@@ -66,14 +71,15 @@ emp_id = 1
 edu_id = 1
 pol_id = 1
 
-for tr in trs:
+for row in main_table_rows:
+    
     member = {}
     member['term'] = term_id
-    member['image'] = urlquote(tr.cssselect('img')[0].attrib.get('src')).replace("%3A", ":", 1)
-    member['source'] = tr.cssselect('a')[0].attrib.get('href')
+    member['image'] = urlquote(row.cssselect('img')[0].attrib.get('src')).replace("%3A", ":", 1)
+    member['source'] = row.cssselect('a')[0].attrib.get('href')
     member['id'] = member['source'].rsplit('/', 1)[1]
 
-    tds = tr.cssselect('td')
+    tds = row.cssselect('td')
 
     member['name'] = normalize_whitespace(
         re.sub(
@@ -82,10 +88,10 @@ for tr in trs:
             tds[1].cssselect('a')[0].text.strip()
             )
         )
-    print(member['name'])
 
-    member['area'] = tds[2].text.strip()
-    member['group'] = tds[3].text.strip()
+    member['area'] = tds[2].cssselect('a')[0].text.strip()
+    member['constituency_src'] = tds[2].cssselect('a')[0].attrib.get('href')
+    member['group'] = tds[3].cssselect('a')[0].text.strip()
 
     max_tries = 5
     tries = 0
@@ -93,6 +99,14 @@ for tr in trs:
     member_html = fetch_with_retries(member['source'])
     member_root = lxml.html.fromstring(member_html)
 
+    profile_summary = member_root.cssselect('div.tr_prof')
+    summary_attributes = profile_summary[0].cssselect('div.tr_quick')
+    member['sex'] = summary_attributes[0].cssselect('p')[1].text.strip()
+    member['contributions'] = summary_attributes[3].cssselect('p')[1].text.strip()
+    member['questions'] = summary_attributes[4].cssselect('p')[1].text.strip()
+    member['committees'] = summary_attributes[5].cssselect('p')[1].text.strip()
+
+    print(member)
     items = member_root.cssselect('span.item')
 
     profls = member_root.cssselect('div.profls')
@@ -109,7 +123,7 @@ for tr in trs:
         e_data['award'] = e_td[1].text.strip()
         e_data['from'] = e_td[2].text.strip()
         e_data['to'] = e_td[3].text.strip()
-        e_data['level'] = e_td[4].text.strip()
+        #e_data['level'] = e_td[4].text.strip()
 
         education.append(e_data)
         edu_id += 1
