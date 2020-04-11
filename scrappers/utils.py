@@ -4,18 +4,10 @@ from urllib.parse import quote as urlquote
 import scraperwiki
 import lxml.html
 
+
 class Utils:
 
     base_url = "https://www.bunge.go.tz/polis/members"
-    term_id = '5'
-    term_data = [
-    {
-        'id': term_id,
-        'name': '5th Assembly',
-        'start_date': '2015-10-25',
-        'source': 'https://en.wikipedia.org/wiki/Tanzanian_parliamentary_election,_2015',
-     },
-    ]
 
     def __init__(self):
         pass
@@ -29,7 +21,7 @@ class Utils:
                 break
             except:
                 print("Retrying {}".format(source))
-                tries +=1
+                tries += 1
 
         return html
 
@@ -43,4 +35,12 @@ class Utils:
     @staticmethod
     def normalize_whitespace(text):
         return re.sub(r'\s+', ' ', text)
+
+    @staticmethod
+    def save(data, table_name, keys=['id']):
+        scraperwiki.sqlite.save(unique_keys=keys, table_name=table_name, data=data)
+
+    @staticmethod
+    def decode_url(url):
+        return urlquote(url).replace("%3A", ":", 1)
 
