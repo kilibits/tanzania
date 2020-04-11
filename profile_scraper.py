@@ -50,7 +50,6 @@ term_data = [
     ]
 
 html = fetch_with_retries(source_url)
-print(html, file=open('results.html', 'a'))
 root = lxml.html.fromstring(html)
 main_table = root.xpath('//table')[0]
 summary_table = root.xpath("//table")[1]
@@ -106,7 +105,6 @@ for row in main_table_rows:
     member['questions'] = summary_attributes[4].cssselect('p')[1].text.strip()
     member['committees'] = summary_attributes[5].cssselect('p')[1].text.strip()
 
-    print(member)
     items = member_root.cssselect('span.item')
 
     profls = member_root.cssselect('div.profls')
@@ -123,7 +121,7 @@ for row in main_table_rows:
         e_data['award'] = e_td[1].text.strip()
         e_data['from'] = e_td[2].text.strip()
         e_data['to'] = e_td[3].text.strip()
-        #e_data['level'] = e_td[4].text.strip()
+        e_data['level'] = e_td[4].text.strip()
 
         education.append(e_data)
         edu_id += 1
