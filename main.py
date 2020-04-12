@@ -108,35 +108,41 @@ for row in main_table_rows:
     items = member_root.cssselect('span.item')
 
     profls = member_root.cssselect('div.profls')
-    profl_data = member_root.cssselect('table')
+    profile_info = member_root.cssselect('div.tr_info')[0]
 
-    education_tr = profl_data[0].cssselect('tr.odd')
-    for e_tr in education_tr:
+    education_div = profile_info.xpath(".//div[@id='education']")[0]
+    education_table = education_div.xpath('.//table')[0]
+    education_rows = education_table.xpath('.//tbody/tr')
+
+    for e_tr in education_rows:
         e_data = {}
         e_data['id'] = edu_id
         e_data['mp_id'] = member['id']
 
         e_td = e_tr.cssselect('td')
-        e_data['institution'] = e_td[0].text.strip()
-        e_data['award'] = e_td[1].text.strip()
-        e_data['from'] = e_td[2].text.strip()
-        e_data['to'] = e_td[3].text.strip()
-        e_data['level'] = e_td[4].text.strip()
+        e_data['period'] = e_td[0].text.strip()
+        e_data['level'] = e_td[1].text.strip()
+        e_data['institution'] = e_td[2].text.strip()
+        e_data['award'] = e_td[3].text.strip()
 
         education.append(e_data)
         edu_id += 1
 
-    employment_tr = profl_data[1].cssselect('tr.odd')
-    for e_tr in employment_tr:
+    #training_div = profile_info.xpath(".//div[@id='training']")[0]
+    employment_div = profile_info.xpath(".//div[@id='work']")[0]
+    employment_table = employment_div.xpath('.//table')[0]
+    employment_rows = employment_table.xpath('.//tbody/tr')
+    for e_tr in employment_rows:
         e_data = {}
         e_data['id'] = emp_id
         e_data['mp_id'] = member['id']
 
         e_td = e_tr.cssselect('td')
-        e_data['institution'] = e_td[0].text.strip()
-        e_data['position'] = handle_empty_string(e_td[1].text) #workaround for blanks in some MP profiles
-        e_data['from'] = e_td[2].text.strip()
-        e_data['to'] = e_td[3].text.strip()
+        e_data['period'] = e_td[0].text.strip()
+        e_data['position'] = e_td[1].text.strip()
+        e_data['organization'] = e_td[2].text.strip()
+
+        print(e_data)
 
         employment.append(e_data)
         emp_id += 1

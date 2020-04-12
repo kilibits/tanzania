@@ -37,7 +37,10 @@ class Utils:
 
     @staticmethod
     def save(data, table_name, keys=['id']):
-        scraperwiki.sqlite.save(unique_keys=keys, table_name=table_name, data=data)
+        try:
+            scraperwiki.sqlite.save(unique_keys=keys, table_name=table_name, data=data)
+        except scraperwiki.sqlite.SqliteError as e:
+            print(str(e))
 
     @staticmethod
     def drop_tables(table_name):
