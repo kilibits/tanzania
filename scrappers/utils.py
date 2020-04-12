@@ -4,7 +4,6 @@ from urllib.parse import quote as urlquote
 import scraperwiki
 import lxml.html
 
-
 class Utils:
 
     base_url = "https://www.bunge.go.tz/polis/members"
@@ -39,6 +38,14 @@ class Utils:
     @staticmethod
     def save(data, table_name, keys=['id']):
         scraperwiki.sqlite.save(unique_keys=keys, table_name=table_name, data=data)
+
+    @staticmethod
+    def drop_tables(table_name):
+        try:
+            scraperwiki.sqlite.drop("drop table if exists {table_name}")
+            scraperwiki.sqlite.commit()
+        except scraperwiki.sqlite.SqliteError as e:
+             print(str(e))
 
     @staticmethod
     def decode_url(url):
