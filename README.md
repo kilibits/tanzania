@@ -9,7 +9,7 @@ Install pre-requisites
 
 To run script
 
-```python <script name>```
+```python main.py```
 
 
 To run the API server
@@ -19,19 +19,3 @@ Pre-requisites : Install Golang(https://golang.org), install gin framework(https
 ```go run api.go```
 
 visit ```localhost:8080/profiles``` to assert API server is running
-
-Any problems should be submitted to issues, and any contributions should be submitted through pull requests
-
-
-TODO
-
-Scrappers:
-
-1. Scrap for questions, supplementary questions, and contributions for every member of parliament
-2. Migrate to Postgres
-
-
-API:
-
-1. Add new GET methods
-2. Rename GET functions and routes
