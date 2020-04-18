@@ -1,6 +1,6 @@
 import re
-from scrappers.term import Term;
-from scrappers.utils import Utils;
+from scrapers.term import Term;
+from scrapers.utils import Utils;
 class ProfileData:
 
     def __init__(self):

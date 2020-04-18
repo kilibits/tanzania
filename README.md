@@ -1,7 +1,7 @@
 This repository is an extension of/built on top of https://github.com/everypolitician-scrapers/tanzania
 
 
-TO RUN SCRAPPER:
+TO RUN scraper:
 
 Install pre-requisites
 

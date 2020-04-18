@@ -1,4 +1,4 @@
-from scrappers.utils import Utils
+from scrapers.utils import Utils
 
 class EmploymentHistory:
 

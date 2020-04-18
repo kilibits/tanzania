@@ -1,3 +1,4 @@
 # Ignore output of scraper
 *.sqlite
 .vscode
+.DS_Store
