@@ -45,10 +45,10 @@ class Utils:
     @staticmethod
     def drop_tables(table_name):
         try:
-            scraperwiki.sqlite.drop("drop table if exists {table_name}")
+            scraperwiki.sqlite.execute(f"drop table if exists {table_name}")
             scraperwiki.sqlite.commit()
         except scraperwiki.sqlite.SqliteError as e:
-             print(str(e))
+            print(str(e))
 
     @staticmethod
     def decode_url(url):

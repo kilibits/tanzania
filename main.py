@@ -109,6 +109,7 @@ for row in main_table_rows:
 
     profls = member_root.cssselect('div.profls')
     profile_info = member_root.cssselect('div.tr_info')[0]
+    profl_data = member_root.cssselect('table')
 
     education_div = profile_info.xpath(".//div[@id='education']")[0]
     education_table = education_div.xpath('.//table')[0]

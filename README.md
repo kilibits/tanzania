@@ -12,10 +12,10 @@ To run script
 ```python main.py```
 
 
-To run the API server
+To run the API server - https://github.com/kilibits/orion-dev-rest
 
 Pre-requisites : Install Golang(https://golang.org), install gin framework(https://gin-gonic.github.io/gin/)
 
 ```go run api.go```
 
-visit ```localhost:8080/profiles``` to assert API server is running
+visit ```localhost:9000/profiles``` to assert API server is running
