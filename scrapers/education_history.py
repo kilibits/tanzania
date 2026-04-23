@@ -1,24 +1,33 @@
+from scrapers.utils import safe_text
+
+
 class EducationHistory:
 
     def __init__(self):
-        self.__education = []
-        self.__id = 1
-    
+        self._education = []
+        self._id = 1
+
     def get_education_data(self):
-        return self.__education
+        return self._education
 
-    def add_education_data(self, education_node, member_id):
-        for e_tr in education_node:
-            data = {}
-            data['id'] = self.__id
-            data['mp_id'] = member_id
+    def add_education_data(self, member_root, member_id):
+        """Parse the education tab.
 
-            e_td = e_tr.cssselect('td')
-            data['institution'] = e_td[0].text.strip()
-            data['award'] = e_td[1].text.strip()
-            data['from'] = e_td[2].text.strip()
-            data['to'] = e_td[3].text.strip()
-            data['level'] = e_td[4].text.strip()
-
-            self.__education.append(data)
-            self.__id += 1
+        Table columns: Year | Level | School | Awards
+        """
+        section = member_root.cssselect("div#education")
+        if not section:
+            return
+        for tr in section[0].cssselect("tbody tr"):
+            tds = tr.cssselect("td")
+            if len(tds) < 4:
+                continue
+            self._education.append({
+                "id": str(self._id),
+                "mp_id": member_id,
+                "year": safe_text(tds[0]),
+                "level": safe_text(tds[1]),
+                "institution": safe_text(tds[2]),
+                "award": safe_text(tds[3]),
+            })
+            self._id += 1

@@ -1,25 +1,42 @@
-from scrapers.utils import Utils
+from scrapers.utils import safe_text
+
+# Map of tab id → human-readable appointment type
+APPOINTMENT_TYPES = {
+    "app_type_1": "Ministry",
+    "app_type_3": "Committee",
+    "app_type_5": "Political Institution",
+    "app_type_7": "Other Institution",
+}
+
 
 class PoliticalCareerHistory:
 
     def __init__(self):
-        self.__political_career = []
-        self.__id = 1
-    
+        self._appointments = []
+        self._id = 1
+
     def get_political_career_data(self):
-        return self.__political_career
+        return self._appointments
 
-    def add_political_career_data(self, political_career_node, member_id):
-        for e_tr in political_career_node:
-            data = {}
-            data['id'] = self.__id
-            data['mp_id'] = member_id
+    def add_political_career_data(self, member_root, member_id):
+        """Parse all appointment tabs (ministries, committees, political, other).
 
-            e_td = e_tr.cssselect('td')
-            e_data['institution'] = e_td[0].text.strip()
-            e_data['position'] = e_td[1].text.strip()
-            e_data['from'] = e_td[2].text.strip()
-            e_data['to'] = e_td[3].text.strip()
-
-            self.__political_career.append(data)
-            self.__id += 1
+        Table columns: # | Duration | Position | Name
+        """
+        for tab_id, appt_type in APPOINTMENT_TYPES.items():
+            section = member_root.cssselect(f"div#{tab_id}")
+            if not section:
+                continue
+            for tr in section[0].cssselect("tbody tr"):
+                tds = tr.cssselect("td")
+                if len(tds) < 4:
+                    continue
+                self._appointments.append({
+                    "id": str(self._id),
+                    "mp_id": member_id,
+                    "type": appt_type,
+                    "duration": safe_text(tds[1]),
+                    "position": safe_text(tds[2]),
+                    "institution": safe_text(tds[3]),
+                })
+                self._id += 1

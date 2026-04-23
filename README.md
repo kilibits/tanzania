@@ -1,21 +1,39 @@
-This repository is an extension of/built on top of https://github.com/everypolitician-scrapers/tanzania
+# Tanzania Parliament Scraper
 
+Scrapes member profiles from the Tanzania Parliament POLIS system at [polis.bunge.go.tz/members](https://polis.bunge.go.tz/members) and stores the data in a local SQLite database.
 
-TO RUN scraper:
+Originally based on [everypolitician-scrapers/tanzania](https://github.com/everypolitician-scrapers/tanzania).
 
-Install pre-requisites
+## Data collected
 
-```pip install -r requirements.txt```
+| Table | Description |
+|---|---|
+| `terms` | Parliament term metadata |
+| `members` | MP profiles: name, party, constituency, sex, contributions, questions, answers, committees |
+| `education_history` | Education background per MP |
+| `employment_history` | Work experience per MP |
+| `appointments` | Ministerial, committee, political and other institutional appointments per MP |
 
-To run script
+## Requirements
 
-```python main.py```
+- Python 3.11+
 
+## Setup
 
-To run the API server
+```bash
+pip install -r requirements.txt
+```
 
-Pre-requisites : Install Golang(https://golang.org), install gin framework(https://gin-gonic.github.io/gin/)
+## Run
 
-```go run api.go```
+```bash
+python3 main.py
+```
 
-visit ```localhost:8080/profiles``` to assert API server is running
+Output is written to `data.sqlite` in the project root.
+
+## Notes
+
+- The POLIS site uses a certificate chain that is not in Python's default CA bundle. SSL verification is disabled automatically — this is expected for this government host.
+- Requests are rate-limited to 1 second between profile fetches to avoid overloading the server.
+- All 433+ member rows load on a single page (DataTables handles client-side filtering), so no pagination is needed.
